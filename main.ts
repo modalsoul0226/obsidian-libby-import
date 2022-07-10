@@ -1,17 +1,12 @@
-import { App, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { Plugin } from 'obsidian';
+import ImporterModal from 'src/components/importer';
+import SettingsTab from 'src/components/settings';
+import { GeneralSettings, DEFAULT_SETTINGS } from 'src/settings/general';
 
-// Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
-	mySetting: string;
-}
-
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
-
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+// libby to obsidian plugin
+export default class LibbyPlugin extends Plugin {
+	settings: GeneralSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -19,14 +14,14 @@ export default class MyPlugin extends Plugin {
 		// command for opening the importer tool
 		this.addCommand({
 			id: 'open-libby-importer',
-			name: 'Open libby importer',
+			name: 'Open',
 			callback: () => {
-				new SampleModal(this.app).open();
+				new ImporterModal(this.app).open();
 			}
 		});
 
 		// settings tab
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
 	onunload() {}
@@ -37,50 +32,5 @@ export default class MyPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
-
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
 	}
 }
