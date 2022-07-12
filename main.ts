@@ -1,6 +1,6 @@
 import { Plugin } from 'obsidian';
-import ImporterModal from 'src/components/importer';
-import SettingsTab from 'src/components/settings';
+import ImporterModal from 'src/views/importer';
+import SettingsTab from 'src/views/settings';
 import { GeneralSettings, DEFAULT_SETTINGS } from 'src/settings/general';
 
 
@@ -23,8 +23,6 @@ export default class LibbyPlugin extends Plugin {
 		// settings tab
 		this.addSettingTab(new SettingsTab(this.app, this));
 	}
-
-	onunload() {}
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
